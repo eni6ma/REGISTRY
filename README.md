@@ -31,7 +31,7 @@ Servers fetch `…/eni6ma` and `…/eni6ma.sha256` from raw.githubusercontent.co
 
 **Raw URL:** `https://raw.githubusercontent.com/eni6ma/REGISTRY/main/circuits/alice/v1/eni6ma`
 
-**Pass+ try:** `?binary_url=https://raw.githubusercontent.com/eni6ma/REGISTRY/main/circuits/alice/v1/eni6ma`
+**Pass+ try:** `https://circuit.eni6ma.com/passplus/?binary_url=https://raw.githubusercontent.com/eni6ma/REGISTRY/main/circuits/alice/v1/eni6ma`
 
 ### bob / v1
 
@@ -49,7 +49,7 @@ Servers fetch `…/eni6ma` and `…/eni6ma.sha256` from raw.githubusercontent.co
 
 **Raw URL:** `https://raw.githubusercontent.com/eni6ma/REGISTRY/main/circuits/bob/v1/eni6ma`
 
-**Pass+ try:** `?binary_url=https://raw.githubusercontent.com/eni6ma/REGISTRY/main/circuits/bob/v1/eni6ma`
+**Pass+ try:** `https://circuit.eni6ma.com/passplus/?binary_url=https://raw.githubusercontent.com/eni6ma/REGISTRY/main/circuits/bob/v1/eni6ma`
 
 ## Layout
 
