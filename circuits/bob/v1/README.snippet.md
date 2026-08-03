@@ -14,4 +14,4 @@
 
 **Raw URL:** `https://raw.githubusercontent.com/eni6ma/REGISTRY/main/circuits/bob/v1/eni6ma`
 
-**Pass+ try (after push to main):** `http://localhost:3000/passplus/?binary_url=https://raw.githubusercontent.com/eni6ma/REGISTRY/main/circuits/bob/v1/eni6ma`
+**Pass+ try (after push to main):** `https://circuit.eni6ma.com/passplus/?binary_url=https://raw.githubusercontent.com/eni6ma/REGISTRY/main/circuits/bob/v1/eni6ma`
