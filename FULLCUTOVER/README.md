@@ -1,0 +1,6 @@
+# FULLCUTOVER
+
+Public IDENTITY + cohort published by genet publisher (SP3/SP4).
+
+Raw IDENTITY:
+`https://raw.githubusercontent.com/eni6ma/REGISTRY/FULLCUTOVER/FULLCUTOVER/identity.json`
