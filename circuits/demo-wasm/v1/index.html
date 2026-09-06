@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>ENI6MA WASM Path-B smoke</title>
+  <style>
+    :root { font-family: ui-sans-serif, system-ui, sans-serif; color: #e8eaed; background: #0f1115; }
+    body { max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 1.25rem; font-weight: 600; }
+    .card { background: #1a1d24; border: 1px solid #2a2f3a; border-radius: 10px; padding: 1rem 1.1rem; margin: 1rem 0; }
+    button { background: #3b82f6; color: white; border: 0; border-radius: 8px; padding: 0.6rem 1rem; font-weight: 600; cursor: pointer; }
+    button:disabled { opacity: 0.5; cursor: wait; }
+    pre { white-space: pre-wrap; word-break: break-all; font-size: 0.8rem; background: #0b0d11; padding: 0.75rem; border-radius: 8px; }
+    .ok { color: #34d399; } .bad { color: #f87171; } .muted { color: #9aa3b2; }
+  </style>
+</head>
+<body>
+  <h1>ENI6MA WASM · Path-B browser smoke</h1>
+  <p class="muted">Fetch published <code>eni6ma_wasm.wasm</code>, verify sibling SHA-256, then run <code>build_minimal_proof</code> via wasm-bindgen.</p>
+  <div class="card">
+    <button id="run">Run proof smoke</button>
+  </div>
+  <div class="card">
+    <div id="status" class="muted">Idle</div>
+    <pre id="out"></pre>
+  </div>
+  <script type="module">
+    const statusEl = document.getElementById('status');
+    const outEl = document.getElementById('out');
+    const btn = document.getElementById('run');
+
+    async function sha256Hex(buf) {
+      const dig = await crypto.subtle.digest('SHA-256', buf);
+      return [...new Uint8Array(dig)].map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function run() {
+      btn.disabled = true;
+      outEl.textContent = '';
+      try {
+        statusEl.textContent = 'Fetching published artifact + digest…';
+        statusEl.className = 'muted';
+        const [wasmRes, shaRes] = await Promise.all([
+          fetch('./eni6ma_wasm.wasm'),
+          fetch('./eni6ma_wasm.wasm.sha256'),
+        ]);
+        if (!wasmRes.ok || !shaRes.ok) throw new Error(`fetch failed: wasm=${wasmRes.status} sha=${shaRes.status}`);
+        const bytes = await wasmRes.arrayBuffer();
+        const expected = (await shaRes.text()).trim().split(/\s+/)[0].toLowerCase();
+        const actual = await sha256Hex(bytes);
+        if (actual !== expected) {
+          statusEl.textContent = 'DIGEST MISMATCH — fail closed';
+          statusEl.className = 'bad';
+          outEl.textContent = JSON.stringify({ expected, actual, bytes: bytes.byteLength }, null, 2);
+          return;
+        }
+        statusEl.textContent = `Digest OK (${actual.slice(0, 16)}…) · loading bindgen runtime…`;
+        statusEl.className = 'ok';
+
+        const init = (await import('./pkg/eni6ma_wasm.js')).default;
+        const { build_minimal_proof } = await import('./pkg/eni6ma_wasm.js');
+        await init();
+
+        const challenge = JSON.stringify({ timestamp: 12345, matrix_data: { rows: [{ values: [1,2,3], row_hash: 'x', row_index: 0 }] } });
+        const bearings = JSON.stringify(['U', 'L', 'R', 'U']);
+        const proof = build_minimal_proof(challenge, bearings);
+
+        statusEl.textContent = 'Digest OK · proof OK';
+        statusEl.className = 'ok';
+        const jsonSafe = (v) => JSON.stringify(v, (_k, x) =>
+          typeof x === 'bigint' ? x.toString() : x, 2);
+        outEl.textContent = jsonSafe({
+          path_b: { expected, actual, published_bytes: bytes.byteLength },
+          challenge: JSON.parse(challenge),
+          bearings: JSON.parse(bearings),
+          proof,
+        });
+      } catch (e) {
+        statusEl.textContent = 'Error';
+        statusEl.className = 'bad';
+        outEl.textContent = String(e && e.stack ? e.stack : e);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    btn.addEventListener('click', run);
+  </script>
+</body>
+</html>
