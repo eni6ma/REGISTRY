@@ -60,3 +60,9 @@ circuits/
   bob/v1/eni6ma
   bob/v1/eni6ma.sha256
 ```
+
+## WASM circuits branch
+
+Minted browser WASM artifacts live on branch [`feat/wasm-circuits`](https://github.com/eni6ma/REGISTRY/tree/feat/wasm-circuits).
+See [`circuits/_wasm/README.md`](circuits/_wasm/README.md) on that branch for Path B layout (`eni6ma_wasm.wasm` + `eni6ma_wasm.wasm.sha256`).
+`main` remains ELF-only Path B (`eni6ma` + `eni6ma.sha256`).
