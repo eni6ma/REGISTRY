@@ -9,8 +9,10 @@ This branch hosts **minted WASM** circuit artifacts for browser / Wasmer clients
 
 ```text
 circuits/<circuit_id>/<version>/
-  eni6ma_wasm.wasm          # raw WASM bytes (not Git LFS)
+  eni6ma_wasm.wasm          # published WASM bytes (Path-B pin; not Git LFS)
   eni6ma_wasm.wasm.sha256   # 64 hex digest of those bytes + trailing newline OK
+  index.html                # optional Path-B browser smoke
+  pkg/                      # optional wasm-bindgen web glue for browser run
   README.snippet.md         # optional human metadata
 ```
 
@@ -32,6 +34,6 @@ URL hint is untrusted; the digest is the pin. Prefer pinning the digest from Cir
 3. `shasum -a 256 eni6ma_wasm.wasm | awk '{print $1}' > eni6ma_wasm.wasm.sha256`
 4. Place under `circuits/<id>/<version>/` and push to this branch (or use GCP publisher)
 
-## Placeholder
+## Browser smoke (`demo-wasm/v1`)
 
-No WASM artifacts are published yet. Add the first circuit under e.g. `circuits/demo-wasm/v1/` when a mint is ready.
+Serve `circuits/demo-wasm/v1` over HTTP, open `index.html`, run the smoke. Digest must match before bindgen init. See that directory’s `README.snippet.md`.
